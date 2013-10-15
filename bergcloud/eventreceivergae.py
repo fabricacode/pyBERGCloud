@@ -25,9 +25,9 @@ class EventReceiver(webapp2.RequestHandler):
             time = datetime.datetime.now()
         )
         e.put()
-        self.deleteOverMaxEvents()
+        #~ self.deleteOverMaxEvents()
         
-        #~ self.deleteOldEntities()  
+        self.deleteOldEntities()  
         #~ self.deleteOldEntities(500) #pass the "seconds" parameter here for changing the min time interval for an entity to be considered old
         
     def deleteOldEntities(self, secsFromNow = 100):
@@ -38,7 +38,8 @@ class EventReceiver(webapp2.RequestHandler):
                 
     def deleteOverMaxEvents(self, maxEntities = 30):
         eq = Event.query(ancestor = allEventsKey()) 
-        nEntities = eq.count()
+        #~ nEntities = eq.count()
+        nEntities = 60
         logging.debug("n entities: "+str(nEntities))
         logging.debug("n max entities: "+str(maxEntities))
         if (nEntities > maxEntities): 
