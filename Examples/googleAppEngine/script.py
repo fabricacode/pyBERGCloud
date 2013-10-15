@@ -35,6 +35,25 @@ COMMAND_FORM_TEMPLATE = """\
 #~ Commands Manager----------------------------------------------------------------
 bg_cs = bergcloud.commandsender.CommandSender()
 
+#~ Events Manager-------------------------------------------------------------------
+
+#~ create a class that inherit from bergcloud.eventreceivergae.EventReceiver and override its post method for managing
+#~ events with methods defined in its parent class
+
+class MyEventReceiver(bergcloud.eventreceivergae.EventReceiver):
+    #override parent class method and 
+    def post(self): 
+        e = bergcloud.eventreceivergae.Event(parent = bergcloud.eventreceivergae.allEventsKey(), 
+            name = self.request.get('name'), 
+            payload = self.request.get('payload'), 
+            address = self.request.get('address'), 
+            time = datetime.datetime.now()
+        )
+        e.put()
+        #and uses a method from the parent class
+        super(MyEventReceiver, self).deleteOldEntities()
+        
+
 
 class MainPage(webapp2.RequestHandler): #MainPage inherit from webapp2.RequestHandler
     
@@ -55,24 +74,29 @@ class MainPage(webapp2.RequestHandler): #MainPage inherit from webapp2.RequestHa
         self.response.write('<pre>List events received to the current Base URL</pre>')
         self.response.write('<h3>time event received - device name - device address - payload</h3>')
         
-        #~ bcEvents = bergcloud.eventreceivergae.Event.query(ancestor = bergcloud.eventreceivergae.allEventsKey())
-        #~ for bcEvent in bcEvents: 
-                #~ self.response.write(
-                    #~ unicode(bcEvent.time).encode('ascii', 'xmlcharrefreplace') + ' - ' 
-                    #~ + bcEvent.name + ' - ' + bcEvent.address + ' - ' 
-                    #~ + bcEvent.payload.encode('ascii', 'ignore')+'<br>'
-                #~ )
         
-        try: 
-            bcEvents = bergcloud.eventreceivergae.Event.query(ancestor = bergcloud.eventreceivergae.allEventsKey()).order(-bergcloud.eventreceivergae.Event.time).fetch(10)
-            for bcEvent in bcEvents: 
+        # PRINT NOT ORDERED EVENT LIST 
+        
+        bcEvents = bergcloud.eventreceivergae.Event.query(ancestor = bergcloud.eventreceivergae.allEventsKey())
+        for bcEvent in bcEvents: 
                 self.response.write(
                     unicode(bcEvent.time).encode('ascii', 'xmlcharrefreplace') + ' - ' 
                     + bcEvent.name + ' - ' + bcEvent.address + ' - ' 
                     + bcEvent.payload.encode('ascii', 'ignore')+'<br>'
                 )
-        except :
-            logging.debug('Index not built yet. Cannot list received events. Wait some time')
+        
+        # PRINT ORDERED EVENT LIST - uses datastore indexes. May take sometime to be updated on the GAE server
+        
+        #~ try: 
+            #~ bcEvents = bergcloud.eventreceivergae.Event.query(ancestor = bergcloud.eventreceivergae.allEventsKey()).order(-bergcloud.eventreceivergae.Event.time).fetch(10)
+            #~ for bcEvent in bcEvents: 
+                #~ self.response.write(
+                    #~ unicode(bcEvent.time).encode('ascii', 'xmlcharrefreplace') + ' - ' 
+                    #~ + bcEvent.name + ' - ' + bcEvent.address + ' - ' 
+                    #~ + bcEvent.payload.encode('ascii', 'ignore')+'<br>'
+                #~ )
+        #~ except :
+            #~ logging.debug('Index not built yet. Cannot list received events. Wait some time')
                     
 
 
@@ -102,6 +126,6 @@ application = webapp2.WSGIApplication([
     ('/APIToken', SetAPIToken),
     ('/devboardAddress', SetDevBoardAddress), 
     ('/sendCommand', SendCommand),
-    ('/device-event/.*', bergcloud.eventreceivergae.EventReceiver), #receives every event directed to this Base URL, no matter the name. 
+    ('/device-event/.*', MyEventReceiver), #receives every event directed to this Base URL, no matter the name. 
 ], debug=True)
 
