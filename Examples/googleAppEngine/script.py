@@ -54,6 +54,15 @@ class MainPage(webapp2.RequestHandler): #MainPage inherit from webapp2.RequestHa
         self.response.write('<hr><h1>Events</h1>')
         self.response.write('<pre>List events received to the current Base URL</pre>')
         self.response.write('<h3>time event received - device name - device address - payload</h3>')
+        
+        #~ bcEvents = bergcloud.eventreceivergae.Event.query(ancestor = bergcloud.eventreceivergae.allEventsKey())
+        #~ for bcEvent in bcEvents: 
+                #~ self.response.write(
+                    #~ unicode(bcEvent.time).encode('ascii', 'xmlcharrefreplace') + ' - ' 
+                    #~ + bcEvent.name + ' - ' + bcEvent.address + ' - ' 
+                    #~ + bcEvent.payload.encode('ascii', 'ignore')+'<br>'
+                #~ )
+        
         try: 
             bcEvents = bergcloud.eventreceivergae.Event.query(ancestor = bergcloud.eventreceivergae.allEventsKey()).order(-bergcloud.eventreceivergae.Event.time).fetch(10)
             for bcEvent in bcEvents: 
