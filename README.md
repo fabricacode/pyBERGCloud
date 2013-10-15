@@ -12,7 +12,7 @@ Setting up
 
 GAE side
 
-3. Create a GAE webapp.
+3. Create a GAE webap (https://appengine.google.com/).
 4. Edit the 'app.yaml' file and change the application name to the one for the GAE webapp.
 5. Deploy the application.
 
