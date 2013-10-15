@@ -16,11 +16,6 @@ GAE side
 4. Edit the 'app.yaml' file and change the application name to the one for the GAE webapp.
 5. Deploy the application.
 
-Notes:  
-'eventreceivergae' module and the example script file use indexed queries. It takes some time (even more then one hour) to GAE to upload index 
-information on the server. Please be patient. 
-
-
 BERGCloud side
 
 6. On the BERGCloud developer website create a new product. Set the newly created GAE website as base URL.
