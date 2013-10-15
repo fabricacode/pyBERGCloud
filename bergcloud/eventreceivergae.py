@@ -24,18 +24,15 @@ class EventReceiver(webapp2.RequestHandler):
             address = self.request.get('address'), 
             time = datetime.datetime.now()
         )
-        e.put()
-        #~ self.deleteOverMaxEvents()
-        
-        self.deleteOldEntities()  
-        #~ self.deleteOldEntities(500) #pass the "seconds" parameter here for changing the min time interval for an entity to be considered old
-        
+        e.put()        
+        self.deleteOldEntities()          
     def deleteOldEntities(self, secsFromNow = 100):
         eq = Event.query(ancestor = allEventsKey()) 
         for e in eq: 
             if (datetime.datetime.now() - e.time).total_seconds() > secsFromNow: 
                 e.key.delete()
                 
+    # function below uses datastore indexes. May take sometime to be updated on the GAE server
     def deleteOverMaxEvents(self, maxEntities = 30):
         eq = Event.query(ancestor = allEventsKey()) 
         #~ nEntities = eq.count()
