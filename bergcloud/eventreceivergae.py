@@ -59,8 +59,7 @@ class EventReceiver(webapp2.RequestHandler):
     # function below uses datastore indexes. May take sometime to be updated on the GAE server
     def deleteOverMaxEvents(self, maxEntities = 30):
         eq = Event.query(ancestor = allEventsKey()) 
-        #~ nEntities = eq.count()
-        nEntities = 60
+        nEntities = eq.count()
         logging.debug("n entities: "+str(nEntities))
         logging.debug("n max entities: "+str(maxEntities))
         if (nEntities > maxEntities): 
