@@ -61,7 +61,7 @@ class MainPage(webapp2.RequestHandler): #MainPage inherit from webapp2.RequestHa
     def get(self):
         self.response.write("Hi BERGCloud!")
         #~ Set device and api token and send command
-        self.response.write('<hr><h1>Events</h1>')
+        self.response.write('<hr><h1>Commands</h1>')
         self.response.write('<pre>Set device and api token and send command</pre>')
         self.response.write(COMMAND_FORM_TEMPLATE) 
         if bg_cs.apiToken is not None: 
