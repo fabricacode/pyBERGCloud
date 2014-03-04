@@ -35,6 +35,8 @@ import datetime
 
 import logging
 
+import json
+
 
 #~ Command-------------------------------------------------------------------------- 
 class Command: 
@@ -57,13 +59,15 @@ class CommandSender:
         else: 
             logging.debug("Command data not provided") 
             return
+        
+                
             
         self.form_fields = {
             "address": self.devBoardAddress,
-            "payload": base64.urlsafe_b64encode(self.payload)#encode string as Base64
+            "payload": json.dumps([int(self.payload)])
         }
         self.form_data = urllib.urlencode(self.form_fields)
-        self.commandUrl = 'http://api.bergcloud.com/v1/products/'+self.apiToken+'/'+self.name
+        self.commandUrl = 'http://api.bergcloud.com/v1/projects/'+self.apiToken+'/'+self.name
         # - send POST to bergcloud
         self.req = urllib2.Request(self.commandUrl, self.form_data)
         try: 
